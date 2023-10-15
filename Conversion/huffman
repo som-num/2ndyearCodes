@@ -1,0 +1,73 @@
+from tabulate import tabulate
+
+# Creating tree nodes
+class HuffmanNode:
+    def __init__(self, char=None, freq=0, *args, **kwargs):
+        name = f"{char}:{freq}"  # Unique name for each node
+        self.char = char
+        self.freq = freq
+        self.children = []
+
+# Main function implementing Huffman coding
+def huffman_code_tree(node, left=True, binString=''):
+    if not node.children:
+        return {node.char: binString}
+    
+    d = dict()
+    if node.children[0]:
+        d.update(huffman_code_tree(node.children[0], True, binString + '0'))
+    if node.children[1]:
+        d.update(huffman_code_tree(node.children[1], False, binString + '1'))
+    return d
+
+def main():
+    string = input("Enter a string: ")
+
+    # Calculating frequency
+    freq = {}
+    total_occurrences = 0  # Variable to store the total occurrences
+
+    for c in string:
+        if c in freq:
+            freq[c] += 1
+        else:
+            freq[c] = 1
+        total_occurrences += 1  # Update the total occurrences
+
+    freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
+
+    nodes = [HuffmanNode(char=char, freq=frequency) for (char, frequency) in freq]
+
+    while len(nodes) > 1:
+        left = nodes.pop()
+        right = nodes.pop()
+        combined_frequency = left.freq + right.freq
+        parent_node = HuffmanNode(char='', freq=combined_frequency)
+        parent_node.children = [left, right]
+        nodes.append(parent_node)
+        nodes = sorted(nodes, key=lambda x: x.freq, reverse=True)
+
+    huffman_root = nodes[0]
+
+    huffmanCode = huffman_code_tree(huffman_root)
+
+    print('\nChar | Occurrences | Huffman Code')
+    print('--------------------------------')
+    total_bits_saved = 0
+    
+    
+    for (char, frequency) in freq:
+        huffman_bit_length = len(huffmanCode[char])
+        occurencesX8bits = frequency * 8
+        bits_saved = occurencesX8bits - (frequency * huffman_bit_length)
+        total_bits_saved += bits_saved
+        print('%-4r | %-11s | %-12s | %-22s' % (char, frequency, huffmanCode[char], occurencesX8bits))
+
+    # Print the total occurrences
+    print(total_occurrences *8)
+    print('\nTotal Occurrences:', total_occurrences)
+    print('Total Occurrences x 8bits: ', total_occurrences *8)
+    print('Total Bits Saved:', total_bits_saved)
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,105 @@
+
+import tabulate
+#TODO: use hashmap to accumulate all the value with the key '1'
+def decToBinary(n):
+    binaryNum = [0]*n
+    i = 0
+    exp = 1
+    table_data = []  # Create an empty list to store table data
+    
+    while (n>0):
+        binaryNum[i] = n % 2
+        
+        n = int(n / 2)
+        
+        i += 1  
+                
+        # Append data to the table for this step
+        table_data.append([exp, binaryNum[i-1]])
+        exp *= 2
+    # Create a header for the table
+    headers = ["Decimal", "Binary Digit"]
+    
+    # Print the table using tabulate
+    print(tabulate.tabulate(table_data, headers=headers, tablefmt="grid"))
+    
+    # Print the binary representation
+    print("Binary Representation:", end=" ")
+    for j in range(i-1, -1, -1):
+        print(binaryNum[j], end="")
+    print()
+
+def binaryToDec(binary_str):
+    binary_str = binary_str[::-1]
+    decimal = 0
+    exp = 1
+    table_data = []
+    
+    headers = ["Binary Digit", "Decimal"]
+    for i in binary_str:
+        table_data.append([i,exp])
+        if i == '1':
+            decimal +=exp
+        exp *= 2
+    print(tabulate.tabulate(table_data, headers=headers,tablefmt="grid"))
+    return decimal
+
+def octalToDec(octal_str):
+    octal_str = octal_str[::-1]
+    decimal = 0
+    exp = 1
+    table_data=[]
+    
+    headers = ["Octal Digit","Decimal"]
+    for i in octal_str:
+        table_data.append([i,exp])
+        decimal += int(i) *exp
+        exp *= 8
+    print(tabulate.tabulate(table_data,headers=headers,tablefmt="grid"))
+    return decimal
+
+
+def hexToDec(hex_str):
+    hex_str = hex_str[::-1]  # Reverse the hexadecimal string
+    decimal = 0
+    exp = 1
+    count = 0
+    table_data = []
+    headers = ["Hexa Digit", "Decimal","decimal x 16^n"]
+    
+    for digit in hex_str:
+        if '0' <= digit <= '9':            
+            decimal_digit = int(digit, 16)
+        elif 'A' <= digit <= 'F':            
+            decimal_digit = ord(digit) - ord('A') + 10
+        else:
+            raise ValueError("Invalid hexadecimal input")
+        
+        decimal += decimal_digit * exp
+        table_data.append([digit, decimal_digit,count])
+        count +=1
+        exp *= 16  # Hexadecimal is base-16
+
+    print(tabulate.tabulate(table_data, headers=headers, tablefmt="grid"))
+    return decimal
+
+
+if __name__=='__main__':
+    # num = int(input("Enter Number: "))
+    # decToBinary(num)
+    
+    numOctal = input("enter octal number: ")
+    print(octalToDec(numOctal))
+    
+    numHexa = input("Enter number: ")
+    print(hexToDec(numHexa))
+    # binary_input = input("Enter Binary Number: ")
+    
+    # # Check if the input is a valid binary string
+    # if not set(binary_input).issubset({'0', '1'}):
+    #     print("Invalid binary input.")
+    # else:
+    #     decimal_result = binaryToDec(binary_input)
+    #     print("Decimal Representation:", decimal_result)
+
+    
